@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="proyecto\imagenes\icono1.ico">
+    <title>The Greatest Estate Developer - Fan page</title>
+    <link rel="stylesheet" type="text/css" href="css\estilos.css">
+    <script src="javascript\codigo.js"></script>
+  
+  </head>
+  
+  <body>
+    <div class="fondo">
+  
+  
+      <div class="contenedor" id="navbar">
+        <a href="index.html">Home</a>
+        <a href="historia.html">History</a>
+        <a href="personajes.html">Characters</a>
+        <a href="capi1.html">Chapter 1</a>
+        <a href="buscar.html">Other Series</a>
+      
+      </div>
+      <div class="contenedor_texto cajas">   
+        <h2 >About </h2>
+        <div style="background-color: black; width: 80%; position: relative; left: 3%;" id="detalleContainer"></div>
+    </div>
+ 
+
+    <script>
+        let data;
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        
+        const mode = urlParams.get('Mode');
+        const URL = 'http://localhost:3001/Comics/'+ id;
+        const token = localStorage.getItem('token');
+        const form = document.querySelector('form');
+        
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+       
+      
+            fetch(URL)
+            .then(function(response){
+                if(response.ok){
+                    return response.json();
+                }
+                throw new Error('La respuesta no fue satisfactoria');
+            }).then(function(comicsData){
+                data = comicsData;
+
+                try {
+                    let detalleContainer = document.getElementById('detalleContainer');
+                    let itemDiv = document.createElement('div');
+                    itemDiv.innerHTML = `
+                    
+                        <h2>${data.Titulo}</h2>
+                        <p>ID: ${data._id}</p>
+                        <p>Estado: ${data.Estado}</p>
+                        <p>Tipo: ${data.Tipo}</p>
+                        <p>Resumen: ${data.Resumen}</p>
+                       
+                    `;
+                    detalleContainer.appendChild(itemDiv);
+                } catch {
+                    console.error('No se encontró el elemento con el ID proporcionado.');
+                }
+            }).catch(function(error){
+                console.log(error);
+            });
+        
+    </script>
+</body>
+</html>

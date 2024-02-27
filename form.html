@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="proyecto\imagenes\icono1.ico">
+    <title>The Greatest Estate Developer - Fan page</title>
+    <link rel="stylesheet" type="text/css" href="css\estilos.css">
+    <script src="javascript\codigo.js"></script>
+  
+  </head>
+
+<body>
+    <h1>Formulario</h1>
+    <br />
+    <form id="formulario">
+        <div>
+            <label for="Id">Id: </label>
+            <input type="text" id="Id" name="Id" disabled />
+        </div>
+        <div>
+            <label for="Titulo">Titulo: </label>
+            <input type="text" id="Titulo" name="Titulo" required />
+        </div>
+        <div>
+            <label for="Estado">Estado: </label>
+            <input type="text" id="Estado" name="Estado" required />
+        </div>
+        <div>
+            <label for="Tipo">Tipo: </label>
+            <input type="text" id="Tipo" name="Tipo" required />
+        </div>
+        <div>
+            <label for="Resumen">Resumen: </label>
+            <input type="text" id="Resumen" name="Resumen" required />
+        </div>
+        <div>
+            <label for="Capitulos">Capitulos: </label>
+            <input type="text" id="Capitulos" name="Capitulos" required />
+        </div>
+        <div id="contenedor-error"></div>
+        <button type="submit">Aceptar</button>
+    </form>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get('id');
+        const mode = urlParams.get('Mode');
+        const URL = 'http://localhost:3001/Comics/' + id;
+        const URL2 = 'http://localhost:3001/Comics/';
+        const token = localStorage.getItem('token');
+        const form = document.querySelector('form');
+        if (!token) {
+            window.location.href = '/login.html';
+        }
+        let TituloInput = document.querySelector('#Titulo');
+        let EstadoInput = document.querySelector('#Estado');
+        let TipoInput = document.querySelector('#Tipo');
+        let ResumenInput = document.querySelector('#Resumen');
+        let CapitulosInput = document.querySelector('#Capitulos');
+        let contenedorError = document.querySelector('#contenedor-error');
+        if (mode === 'UPD') {
+            console.log(URL);
+            fetch(URL)
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('La respuesta no es satisfactoria');
+                }).then(function (data) {
+                    let idElement = document.querySelector('#Id');
+                    idElement.value = data._id;
+                    let TituloElement = document.querySelector('#Titulo');
+                    TituloElement.value = data.Titulo;
+                    let EstadoElement = document.querySelector('#Estado');
+                    EstadoElement.value = data.Estado;
+                    let TipoElement = document.querySelector('#Tipo');
+                    TipoElement.value = data.Tipo;
+                    let ResumenElement = document.querySelector('#Resumen');
+                    ResumenElement.value = data.Resumen;
+                    let CapitulosElement = document.querySelector('#Capitulos');
+                    CapitulosElement.value = data.Capitulos;
+                }).catch(function (error) {
+                    console.error(error);
+                });
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const Titulo = TituloInput.value;
+                const Estado = EstadoInput.value;
+                const Tipo = TipoInput.value;
+                const Resumen = ResumenInput.value;
+                const Capitulos = CapitulosInput.value;
+
+                fetch(URL, {
+                    method: 'PUT',
+                    headers: {
+                        'content-type': 'application/json'
+                        , 'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ Titulo, Estado, Tipo, Resumen, Capitulos })
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta no fue correcta');
+                    }
+                    return response.json();
+                }).then(data => {
+                    window.location.href = '/listado.html';
+                }).catch(error => {
+                    console.log('Error', error);
+                    if (error && error.message) {
+                        contenedorError.textContent = 'Error en la actualización: ' + error.message;
+                    } else {
+                        contenedorError.textContent = 'Error en la actualización';
+                    }
+                });
+            });
+            } else if (mode === 'DLT') {
+            console.log(URL);
+            fetch(URL)
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('La respuesta no es satisfactoria');
+                }).then(function (data) {
+                    let idElement = document.querySelector('#Id');
+                    idElement.value = data._id;
+                    let TituloElement = document.querySelector('#Titulo');
+                    TituloElement.value = data.Titulo;
+                    let EstadoElement = document.querySelector('#Estado');
+                    EstadoElement.value = data.Estado;
+                    let TipoElement = document.querySelector('#Tipo');
+                    TipoElement.value = data.Tipo;
+                    let ResumenElement = document.querySelector('#Resumen');
+                    ResumenElement.value = data.Resumen;
+                    let CapitulosElement = document.querySelector('#Capitulos');
+                    CapitulosElement.value = data.Capitulos;
+                }).catch(function (error) {
+                    console.error(error);
+                });
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const Titulo = TituloInput.value;
+                const Estado = EstadoInput.value;
+                const Tipo = TipoInput.value;
+                const Resumen = ResumenInput.value;
+                const Capitulos = CapitulosInput.value;
+
+                fetch(URL, {
+                    method: 'DELETE',
+                    headers: {
+                        'content-type': 'application/json'
+                        , 'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ Titulo, Estado, Tipo, Resumen, Capitulos })
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta no fue correcta');
+                    }
+                    return response.json();
+                }).then(data => {
+                    window.location.href = '/listado.html';
+                }).catch(error => {
+                    console.log('Error', error);
+                    if (error && error.message) {
+                        contenedorError.textContent = 'Error en la actualización: ' + error.message;
+                    } else {
+                        contenedorError.textContent = 'Error en la actualización';
+                    }
+                });
+            });
+            } else if (mode === 'CRT') {
+            console.log(URL2);
+            fetch(URL2)
+                .then(function (response) {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('La respuesta no es satisfactoria');
+                }).then(function (data) {/*
+                    
+                    let TituloElement = document.querySelector('#Titulo');
+                    TituloElement.value = data.Titulo;
+                    let EstadoElement = document.querySelector('#Estado');
+                    EstadoElement.value = data.Estado;
+                    let TipoElement = document.querySelector('#Tipo');
+                    TipoElement.value = data.Tipo;
+                    let ResumenElement = document.querySelector('#Resumen');
+                    ResumenElement.value = data.Resumen;
+                    let CapitulosElement = document.querySelector('#Capitulos');
+                    CapitulosElement.value = data.Capitulos;*/
+                }).catch(function (error) {
+                    console.error(error);
+                });
+
+            form.addEventListener('submit', e => {
+                e.preventDefault();
+                const Titulo = TituloInput.value;
+                const Estado = EstadoInput.value;
+                const Tipo = TipoInput.value;
+                const Resumen = ResumenInput.value;
+                const Capitulos = CapitulosInput.value;
+
+                fetch(URL2, {
+                    method: 'POST',
+                    headers: {
+                        'content-type': 'application/json'
+                        , 'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ Titulo, Estado, Tipo, Resumen, Capitulos })
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('La respuesta no fue correcta');
+                    }
+                    return response.json();
+                }).then(data => {
+                    window.location.href = '/listado.html';
+                }).catch(error => {
+                    console.log('Error', error);
+                    if (error && error.message) {
+                        contenedorError.textContent = 'Error al Crear: ' + error.message;
+                    } else {
+                        contenedorError.textContent = 'Error al Crear';
+                    }
+                });
+            });
+            }
+            
+        
+    </script>
+</body>
+
+</html>
