@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="proyecto\imagenes\icono1.ico">
+        <title>The Greatest Estate Developer - Fan page</title>
+        <link rel="stylesheet" type="text/css" href="css\estilos.css">
+        <script src="javascript\codigo.js"></script>
+      
+      </head>
+<body>
+    
+    <div class="miDiv"  >
+        <div id="tope"> 
+       
+        
+    <br>
+    <form style="justify-content:right" >
+        <div >
+            <label for="email">Email:</label>
+            <br>
+            <input type="text" id="email" name="email" required/>
+        </div>
+        <br>
+        <div>
+            <label for="Password">Password:</label>
+            <br>
+            <input type="password" id="Password" name="Password" required/>
+        </div>
+        <br>
+        <div id="contenedor-error"></div>
+        <button type="submit">Login</button>
+        <br>
+    </div>
+    </form>
+</div>
+    <script>
+        const form = document.querySelector('form');
+        const emailInput = document.querySelector('#email');
+        const passwordInput = document.querySelector('#Password');
+        const contenedorError = document.querySelector('#contenedor-error');
+
+        form.addEventListener('submit', e=>{
+            e.preventDefault();
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            fetch('http://localhost:3001/login', {
+                method: 'POST',
+                headers: {'content-type': 'application/json'},
+                body: JSON.stringify({email, password})
+            }).then(response => {
+                if(!response.ok){
+                    throw new Error('La respuesta no fue correcta');
+                }
+                console.log(response.toString());
+                return response.json();
+            }).then(data => {
+                console.log(data.token);
+                localStorage.setItem('token', data.token);
+                window.location.href = '/index.html';
+            })          
+            .catch(error =>{
+                console.log('Error', error);
+                contenedorError.textContent = 'Usuario o Contraseña Incorrecta';
+            });
+        });
+    </script>
+</body>
+</html>

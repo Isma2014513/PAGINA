@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="proyecto\imagenes\icono1.ico">
+        <title>The Greatest Estate Developer - Fan page</title>
+        <link rel="stylesheet" type="text/css" href="css\estilos.css">
+        <script src="javascript\codigo.js"></script>
+      
+      </head>
+      
+      <body>
+        <div class="fondo">
+      
+      
+         
+          <div class="contenedor" id="navbar">
+            <a href="index.html">Home</a>
+            <a href="historia.html">History</a>
+            <a href="personajes.html">Characters</a>
+            <a href="capi1.html">Chapter 1</a>
+            <a href="buscar.html">Other Series</a>
+            <a href="listado.html">Edit Data</a>
+            <a href="login.html">Login</a>
+              
+            </div>
+   <div class="buscador cajas" >
+    <h1>Other Series</h1>
+    <input type="text" id="searchInput" placeholder="search by title...">
+    <div id="dataContainer"></div>
+    <div id="paginationButtons" class="buscador2"></div>
+</div>
+    <script>
+        let currentPage = 1;
+        let data;
+
+        const getData = async (page = 1) => {
+            try {
+                const response = await fetch(`http://localhost:3001/Comics?page=${page}`);
+                if (!response.ok) {
+                    throw new Error('La solicitud no pudo completarse.');
+                }
+                data = await response.json();
+
+                renderData();
+            } catch (error) {
+                console.error('Error al obtener los datos:', error);
+            }
+        };
+
+        const renderData = () => {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase();
+
+            const filteredData = data.filter(item =>
+                item.Titulo.toLowerCase().includes(searchTerm)
+            );
+
+            const dataContainer = document.getElementById('dataContainer');
+            dataContainer.innerHTML = '';
+
+            filteredData.forEach(item => {
+                let itemDiv = document.createElement('div');
+                itemDiv.innerHTML = `<a  href='/visor.html?id=${item._id}&page=${currentPage}&title=${item.Titulo}' class="datos">
+                    <h2>${item.Titulo}</h2></a>
+                    <p>Estado: ${item.Estado}</p>
+                    
+                    <hr>
+                `;
+                dataContainer.appendChild(itemDiv);
+            });
+
+            renderPagination();
+        };
+
+        const renderPagination = () => {
+            const paginationButtons = document.getElementById('paginationButtons');
+            paginationButtons.innerHTML = '';
+
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Página anterior';
+            prevButton.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    getData(currentPage);
+                }
+            });
+            paginationButtons.appendChild(prevButton);
+
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Página siguiente';
+            nextButton.addEventListener('click', () => {
+                currentPage++;
+                getData(currentPage);
+            });
+            paginationButtons.appendChild(nextButton);
+        };
+
+        getData();
+        document.getElementById('searchInput').addEventListener('input', renderData);
+    </script>
+</body>
+</html>

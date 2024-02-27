@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="file"/>
+        <button type="submit">Cargar Archivo</button>
+    </form>
+    <div id="image-container"></div>
+    <script>
+        const form = document.getElementById("upload-form");
+        const container = document.getElementById("image-container");
+        const urlParams = new URLSearchParams(window.location.search);
+        const ImageUrl = urlParams.get("ImageUrl");
+        if(ImageUrl){
+            const img = document.createElement('img');
+            img.src = '/uploads/'+ImageUrl;
+            img.style.width="400px";
+            img.classList.add("imagen1");
+            container.appendChild(img);
+        }
+
+        form.addEventListener("submit", (event)=>{
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch("http://localhost:3002/upload",{
+                method: "POST",
+                body: formData,
+            }).then(function(response){
+                if(response.ok){
+                    return response.json();
+                }
+                throw new Error("La respuesta no fue satisfactoria");
+            }).then((data)=>{
+                console.log(data.filename);
+                window.location.href = "/upload.html?ImageUrl="+data.filename;
+            })
+        });
+    </script>
+</body>
+</html>

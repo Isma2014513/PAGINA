@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="proyecto\imagenes\icono1.ico">
+        <title>The Greatest Estate Developer - Fan page</title>
+        <link rel="stylesheet" type="text/css" href="css\estilos.css">
+        <script src="javascript\codigo.js"></script>
+      
+      </head>
+      
+      <body>
+        <div class="fondo">
+      
+      
+         
+          <div class="contenedor" id="navbar">
+            <a href="index.html">Home</a>
+            <a href="historia.html">History</a>
+            <a href="personajes.html">Characters</a>
+            <a href="capi1.html">Chapter 1</a>
+            <a href="buscar.html">Other Series</a>
+            <a href="listado.html">Edit Data</a>
+            <a href="login.html">Login</a>
+              
+            </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+    <table style="font-size: 9.5px;"  id="miTabla" border="1">
+        <thead>
+            <tr>
+            
+
+                <th>Id</th>
+                <th>Titulo</th>
+                <th>Estado</th>
+                <th>Tipo</th>  
+                <th>Resumen</th> 
+                <th>Capitulos</th>
+                <th>Actualizar</th>             
+                <th>Eliminar</th>
+                <th>Crear</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    <script>
+        fetch('http://localhost:3001/Comics')
+            .then(response => {
+                if(response.ok){
+                    return response.json();
+                }
+                throw new Error('La respuesta no fue satisfactoria');
+            })
+            .then(data => {
+                let tableBody = document.querySelector('#miTabla tbody');
+                data.forEach(item => {
+                    let row = tableBody.insertRow();
+                    row.insertCell().textContent = item._id;
+                    row.insertCell().textContent = item.Titulo;
+                    row.insertCell().textContent = item.Estado;
+                    row.insertCell().textContent = item.Tipo;
+                    row.insertCell().textContent = item.Resumen;
+                    row.insertCell().textContent = item.Capitulos;
+
+                    let linkCellUpdate = row.insertCell();
+                    let linkUpdate = document.createElement('a');
+                    linkUpdate.href= '/form.html?Mode=UPD&id='+item._id;
+                    linkUpdate.textContent = 'Actualizar Registro';
+                    linkCellUpdate.appendChild(linkUpdate);
+
+                    let linkCellDelete = row.insertCell();
+                    let linkDelete = document.createElement('a');
+                    linkDelete.href= '/form.html?Mode=DLT&id='+item._id;
+                    linkDelete.textContent = 'Eliminar Registro';
+                    linkCellDelete.appendChild(linkDelete);
+
+                    let linkCellCreate = row.insertCell();
+                    let linkCreate = document.createElement('a');
+                    linkCreate.href= '/form.html?Mode=CRT';
+                    linkCreate.textContent = 'Crear Registro';
+                    linkCellCreate.appendChild(linkCreate);
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    </script>
+</body>
+</html>
